@@ -130,6 +130,63 @@ arguments. Never commit them.
 sends a `scope` parameter only if the connect form submits one. Reading campaigns and tiers
 needs the corresponding Patreon scopes.
 
+## Getting an access token by hand: `PatreonGetAccessToken`
+
+`src/test/java/org/springframework/social/patreon/connect/PatreonGetAccessToken.java` is a
+command-line utility that runs the OAuth2 flow without the web app. It prints the access token,
+its expiry and the refresh token. It's useful for trying out the Patreon API or checking a
+client's setup.
+
+It lives in the test sources, so it isn't part of the published jar.
+
+**Settings.** Credentials are never stored in the file. Pass them as environment variables (the
+same names app-server uses) or as JVM system properties:
+
+| Environment variable | System property | Required | Default |
+|---|---|---|---|
+| `PATREON_CLIENT_ID` | `-Dpatreon.clientId` | yes | |
+| `PATREON_CLIENT_SECRET` | `-Dpatreon.clientSecret` | yes | |
+| `PATREON_REDIRECT_URL` | `-Dpatreon.redirectUrl` | no | `https://localhost:8443/patreon` |
+
+The redirect URL must be registered on the Patreon OAuth client. Nothing has to be listening at
+that address, because you copy the code from the browser's address bar.
+
+**Running it from Eclipse:** right-click the class and choose **Run As → Java Application**.
+Then add the variables on the run configuration's **Environment** tab.
+
+**Running it from the command line,** from the `mixednutz-java-clients` root:
+
+```bash
+mvn -q install -DskipTests          # once, so mixednutz-java-api-core is in your local repo
+
+cd mixednutz-java-api-patreon
+PATREON_CLIENT_ID=<client id> PATREON_CLIENT_SECRET=<client secret> \
+  mvn -q exec:java -Dexec.classpathScope=test \
+      -Dexec.mainClass=org.springframework.social.patreon.connect.PatreonGetAccessToken
+```
+
+**Example session:**
+
+```text
+Put this URL into a browser:
+https://www.patreon.com/oauth2/authorize?client_id=<client id>&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A8443%2Fpatreon
+
+Enter code:<paste the value of ?code= from the URL the browser was redirected to>
+Access Token: <access token>
+Current Time: <local date-time>
+Expire Time: <epoch millis>(<UTC instant>)
+Refresh Token: <refresh token>
+```
+
+1. Open the printed URL and approve access.
+2. Patreon redirects to the redirect URL with `?code=...`. The page will probably fail to load,
+   which is fine.
+3. Copy the `code` value from the address bar and paste it at the prompt.
+
+Authorization codes are single-use and expire quickly, so paste the code soon after approving.
+
+**Treat the printed tokens as secrets.** Don't paste them into code, commits or issues.
+
 ## Notes
 
 * **Token refreshes go to Patreon.** Refreshing an expired access token calls
