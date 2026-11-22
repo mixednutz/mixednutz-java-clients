@@ -129,6 +129,14 @@ default, so if it isn't set, creating a link card fails.
 * **Connecting:** a signed-in user connects with `POST /connect/bluesky`. This creates the
   connection with the configured account, and no Bluesky login page is involved.
 
+## API references
+
+* [Bluesky HTTP API reference](https://endpoints.bsky.app/): includes
+  `com.atproto.server.createSession`, `refreshSession`, `createRecord` and `uploadBlob`
+* [Creating posts guide](https://docs.bsky.app/docs/advanced-guides/posts): post records, link
+  cards (external embeds) and image blobs
+* [AT Protocol](https://atproto.com/): the underlying protocol, with XRPC and Lexicon specs
+
 ## Notes
 
 * **The PDS host is used as given.** Requests go to `{pdsHost}/xrpc/com.atproto.server.createSession`

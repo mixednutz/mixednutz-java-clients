@@ -4,7 +4,8 @@ Patreon adapter for MixedNutz. Today it's used **only to provide credentials**: 
 user connects their Patreon account through OAuth2, and MixedNutz stores the resulting
 credentials. Those credentials also let MixedNutz read Patreon **tiers**. app-server uses the
 tiers as "external lists", so a post's visibility can be limited to the patrons of a tier.
-**You can't post to Patreon** with this module.
+**You can't post to Patreon** with this module, because Patreon's API currently has no
+endpoint for creating posts.
 
 This module is part of the [mixednutz-java-clients](../) reactor. Its version is the
 reactor's version.
@@ -16,7 +17,7 @@ reactor's version.
 | Connect a Patreon account (OAuth2) and store its credentials | ✅ Works |
 | Read the user's identity and campaigns (Patreon API v2) | ✅ Implemented (`PatreonTemplate`) |
 | Tiers as external lists, for post visibility (`TierAdapter`, through `getRoleClient()`) | ✅ Works. `getAvailableRoles()` returns the tiers of the creator's campaigns, and `getRolesAssigned()` returns the tiers the connected user is a patron of. app-server reads them through `ExternalFeedManager.getExternalLists` / `getExternalListsUserIsOn`. |
-| Post to Patreon | ❌ Not supported. `canPost()` returns `false`, `create()` and `postToTimeline()` return `null`. |
+| Post to Patreon | ❌ Not possible, because Patreon's API has no posting endpoint at the moment. `canPost()` returns `false`, and `create()` and `postToTimeline()` return `null`. |
 | Read a Patreon timeline into MixedNutz (`getTimelineClient()`) | ❌ Not implemented, returns `null` |
 | User lookup (`getUserClient()`), groups (`getGroupClient()`) | ❌ Not implemented |
 
@@ -186,6 +187,13 @@ Refresh Token: <refresh token>
 Authorization codes are single-use and expire quickly, so paste the code soon after approving.
 
 **Treat the printed tokens as secrets.** Don't paste them into code, commits or issues.
+
+## API references
+
+* [Patreon API reference](https://docs.patreon.com/): OAuth2, scopes and the API v2 resources
+  (identity, campaigns, tiers)
+* [Patreon client registration portal](https://www.patreon.com/portal/registration/register-clients):
+  where OAuth clients and redirect URIs are managed
 
 ## Notes
 

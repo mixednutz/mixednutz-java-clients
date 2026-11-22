@@ -124,6 +124,15 @@ Never commit the token.
 3. To get the default channel ID, enable Developer Mode in Discord, then right-click the
    channel and choose **Copy Channel ID**.
 
+## API references
+
+* [Discord Developer Platform documentation](https://docs.discord.com/developers/intro)
+* [Message resource](https://docs.discord.com/developers/resources/message): sending messages
+  to channels
+* [Permissions](https://docs.discord.com/developers/topics/permissions): what the bot needs in
+  each channel
+* [Javacord](https://javacord.org/): the Java Discord library this module uses (version 3.7.0)
+
 ## Notes
 
 * **Each API call logs the bot in.** `DiscordServiceProvider.getApi()` performs a full Javacord
