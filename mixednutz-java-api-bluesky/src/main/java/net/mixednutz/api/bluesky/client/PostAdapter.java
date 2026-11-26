@@ -3,6 +3,8 @@ package net.mixednutz.api.bluesky.client;
 import java.util.Collections;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.social.bluesky.api.BlobResponse;
 import org.springframework.social.bluesky.api.Bluesky;
@@ -21,6 +23,8 @@ import net.mixednutz.api.client.PostClient;
 import net.mixednutz.api.model.ITimelineElement;
 
 public class PostAdapter implements PostClient<PostForm> {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PostAdapter.class);
 	
 	private final Connection<Bluesky> conn;
 	private EmbedClient embedClient;
@@ -65,6 +69,11 @@ public class PostAdapter implements PostClient<PostForm> {
 	public ITimelineElement postToTimeline(PostForm post) {
 		Post record = post.toPostRecord();
 		RecordResponse<Post> postResponse = conn.getApi().createPost(record);
+		LOG.info("Created post: URI:{}; CID:{}; CreatedAt:{}; Text:{}", 
+				postResponse.getUri(), 
+				postResponse.getCid(),
+				record.getCreatedAt(),
+				record.getText());
 		return new BlueskyPostElement(postResponse);
 	}
 
